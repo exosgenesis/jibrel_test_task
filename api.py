@@ -21,7 +21,7 @@ class CurrenciesRes(Resource):
 
     @auth.login_required
     def post(self):
-        json_data = request.get_json(force=True)
+        json_data = request.get_json()
         curr = Currency.new_from_dict(json_data)
         db.session.add(curr)
 
@@ -53,8 +53,9 @@ class CurrencyRes(Resource):
 class RateRes(Resource):
     @auth.login_required
     def get(self, cid):
+        depth = app.config['DEPTH']
         end = date.today()
-        start = end - timedelta(days=10)
+        start = end - timedelta(depth)
         rates = Rate.query.filter(Rate.currency_id == cid, Rate.date.between(start, end)).all()
 
         if not rates:
@@ -63,7 +64,7 @@ class RateRes(Resource):
         res = {
             'rate': max(rates, key=lambda o: o.date).rate,
             'average_by_day': reduce(lambda acc, x: acc + x.volume, rates, 0.0) / len(rates),
-            'depth': 10
+            'depth': depth
         }
         return res
 
