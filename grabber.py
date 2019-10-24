@@ -1,5 +1,5 @@
 import time
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 from collections import OrderedDict
 
 import requests
@@ -21,7 +21,10 @@ class RatesGrabber:
     def grab(self):
         currs = Currency.query.all()
         curr_ids = {c.id for c in currs}
-        end_date = date.today() + timedelta(days=1)
+
+        today = date.today()
+        end_date = today + timedelta(days=1)
+        default_start_date = today - timedelta(days=self._depth)
 
         if curr_ids == self._last_currencies and self._last_date_grab == end_date:
             # same currencies, same day -> just update last rates
@@ -29,7 +32,6 @@ class RatesGrabber:
                 self._update_rate(curr, end_date)
         else:
             # first launch, new currencies or new day -> read and add new day rates
-            default_start_date = end_date - timedelta(days=self._depth)
             for curr in currs:
                 self._init_rates(curr, default_start_date, end_date)
 
@@ -38,11 +40,11 @@ class RatesGrabber:
         self._last_currencies = curr_ids
 
     def _update_rate(self, curr, end_date):
-        rate = self._get_last_rate(curr.id)
-        rates = self._fetch_rates(curr, rate.date, end_date)
+        exist_rate = self._get_last_rate(curr.id)
+        rates = self._fetch_rates(curr, exist_rate.date, end_date)
         new_rate = rates[0]
-        rate.rate = new_rate.rate
-        rate.volume = new_rate.volume
+        exist_rate.rate = new_rate.rate
+        exist_rate.volume = new_rate.volume
 
     def _init_rates(self, curr, default_start_date, end_date):
         rate = self._get_last_rate(curr.id)
@@ -69,9 +71,9 @@ class RatesGrabber:
             target_curr=self._target_curr
         )
         params = {
-            'limit': 240,  # 10 days and 24 row by day
+            'limit': 24 * self._depth,
             'sort': 1,
-            'start': self.timestamp(start_date) - 1,
+            'start': self.timestamp(start_date),
             'end': self.timestamp(end_date)
         }
 
@@ -96,5 +98,5 @@ class RatesGrabber:
             all_volume = groups.get(k, [0, 0])[1]
             groups[k] = [rate, all_volume + row_volume]
 
-        return [Rate(currency_id=curr.id, date=k, rate=v[0], volume=v[1])
+        return [Rate(currency=curr, date=k, rate=v[0], volume=v[1])
                 for k, v in groups.items()]

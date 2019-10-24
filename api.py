@@ -46,6 +46,7 @@ class CurrencyRes(Resource):
     def delete(self, cid):
         curr = Currency.query.filter(Currency.id == cid).first_or_404()
         db.session.delete(curr)
+        Rate.query.filter(Rate.currency_id == cid).delete()
         db.session.commit()
         return '', 204
 

@@ -5,7 +5,9 @@ class Currency(db.Model):
     __tablename__ = 'currency'
     id = db.Column(db.Integer, primary_key=True, supports_dict=True)
     name = db.Column(db.String(3), unique=True, nullable=False, supports_dict=True)
-    rate = db.relationship("Rate", cascade='all,delete', passive_deletes=True, backref="currency")
+
+    rates = db.relationship("Rate", cascade='all,delete', passive_deletes=True, backref="currency",
+                            lazy=True)
 
     def __repr__(self):
         return '<Currency %d %r>' % (self.id, self.name)
