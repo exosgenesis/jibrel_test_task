@@ -14,6 +14,7 @@ class GrabberWorker:
         self._rates_api_event.clear()
         self._stop_event.clear()
         self._thread = None
+        self.grabbed_event = threading.Event()
 
     def notify(self):
         self._rates_api_event.set()
@@ -27,12 +28,15 @@ class GrabberWorker:
 
     def stop(self):
         self._stop_event.set()
+        self._rates_api_event.set()
 
     def _routine(self):
         while not self._stop_event.is_set():
             try:
+                self.grabbed_event.clear()
                 self._grabber.grab()
             except Exception as e:
                 print(e)
+            self.grabbed_event.set()
             self._rates_api_event.wait(self._updates_delay)
             self._rates_api_event.clear()

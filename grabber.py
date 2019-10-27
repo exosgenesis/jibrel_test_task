@@ -98,5 +98,5 @@ class RatesGrabber:
             all_volume = groups.get(k, [0, 0])[1]
             groups[k] = [rate, all_volume + row_volume]
 
-        return [Rate(currency=curr, date=k, rate=v[0], volume=v[1])
+        return [Rate(currency_id=curr.id, date=k, rate=v[0], volume=v[1])
                 for k, v in groups.items()]

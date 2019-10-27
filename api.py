@@ -73,11 +73,15 @@ class RateRes(Resource):
 class RatesGrabberRes(Resource):
     # only for bebug
     def post(self):
-        if GRABBER_WORKER in app.config:
-            app.config[GRABBER_WORKER].grab_in_this_thread()
-            return {'message': 'rates has been grabbed'}, 200
+        if GRABBER_WORKER not in app.config:
+            abort(404, message='grabber instance not bound')
 
-        abort(404, message='grabber instance not bound')
+        if app.config['GRABBER_IN_APP_THREAD']:
+            app.config[GRABBER_WORKER].grab_in_this_thread()
+            return {'message': 'grabbed rates'}, 200
+        else:
+            app.config[GRABBER_WORKER].notify()
+            return {'message': 'sent signal to grabber'}, 200
 
 
 api.add_resource(CurrenciesRes, '/currencies')
