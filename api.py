@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from functools import reduce
 
 from flask import request
+from sqlalchemy.exc import IntegrityError
 
 from models import Currency, Rate
 from app import app, db, auth
@@ -27,9 +28,9 @@ class CurrenciesRes(Resource):
 
         try:
             db.session.commit()
-        except Exception as e:
-            # todo: unique error
-            abort(400, message='Currency already exist')
+        except IntegrityError as e:
+            if e.orig.args[0] == 1062:
+                abort(400, message='Currency already exist')
 
         if GRABBER_WORKER in app.config:
             app.config[GRABBER_WORKER].notify()

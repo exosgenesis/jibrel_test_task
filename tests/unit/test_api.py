@@ -165,7 +165,7 @@ def test_curr_add_negative(client):
     j_eth = json.dumps({'name': 'ETH'})
 
     rs = client.post('/currencies', data=j_eth, content_type='application/json')
-    assert 200 != rs.status_code
+    assert 201 != rs.status_code
 
     assert 1 == Currency.query.count()
 
