@@ -9,7 +9,9 @@ if __name__ == '__main__':
 
     grabber_worker = GrabberWorker(app.config)
     app.config[GRABBER_WORKER] = grabber_worker
-    grabber_worker.start()
+
+    if not (app.config['DEBUG'] and app.config['NO_BACKGROUND']):
+        grabber_worker.start()
 
     # app.run(port=5002)
     serve(app, listen='*:5002')
