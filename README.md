@@ -73,7 +73,7 @@ API должно быть закрыто Basic авторизацией
 - **TARGET_CURRENCY(str(3))**: Валюта по отношению которой собираются данные курсов
 - **NO_BACKGROUND (bool**): Запредить запускать grabber в виде отдельного треда. Обновление курсов валют происходит теперь только при вызове `POST /ratesgrabber`.(только при отладке)
 - **DEPTH(int)**: глубина анализа в днях
-- **API_TRADE_URL(str) **: путь к trade Api
+- **API_TRADE_URL(str)**: путь к trade Api
 - **RATES_UPDATES_DELAY(int)**: перерыв между вызовами граббера в секундах
 - **SQLALCHEMY_DATABASE_URI(str)**: uri к базе данных
 
