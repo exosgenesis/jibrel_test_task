@@ -8,4 +8,4 @@ venv
 *.pyc
 tests
 __pycache__
-/docker-compose.yml
+docker-compose.yml
