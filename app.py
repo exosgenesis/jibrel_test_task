@@ -5,6 +5,7 @@ from flask_httpauth import HTTPBasicAuth
 
 from startup_settings import SETTINGS
 
+
 app = Flask(__name__)
 app.config.from_pyfile(SETTINGS['config_path'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

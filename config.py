@@ -1,7 +1,7 @@
 DEBUG = False
 DISABLE_AUTH = False
 TARGET_CURRENCY = 'USD'
-GRABBER_IN_APP_THREAD = False
+NO_BACKGROUND = False
 DEPTH = 10
 API_TRADE_URL = 'https://api-pub.bitfinex.com/v2/candles/trade'
 RATES_UPDATES_DELAY = 60

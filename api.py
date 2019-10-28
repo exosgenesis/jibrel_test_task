@@ -1,9 +1,9 @@
+import time
 from datetime import date, timedelta
 from functools import reduce
 
 from flask import request
 
-from grabber_worker import GrabberWorker
 from models import Currency, Rate
 from app import app, db, auth
 from flask_restful import Resource, Api, abort
@@ -76,7 +76,7 @@ class RatesGrabberRes(Resource):
         if GRABBER_WORKER not in app.config:
             abort(404, message='grabber instance not bound')
 
-        if app.config['GRABBER_IN_APP_THREAD']:
+        if app.config['NO_BACKGROUND']:
             app.config[GRABBER_WORKER].grab_in_this_thread()
             return {'message': 'grabbed rates'}, 200
         else:
@@ -90,12 +90,3 @@ api.add_resource(RateRes, '/rate/<cid>')
 
 if app.config['DEBUG']:
     api.add_resource(RatesGrabberRes, '/ratesgrabber')
-
-
-if __name__ == '__main__':
-    grabber_worker = GrabberWorker(app.config)
-    app.config[GRABBER_WORKER] = grabber_worker
-    grabber_worker.start()
-
-    app.run(port=5001)
-    grabber_worker.stop()

@@ -1,0 +1,9 @@
+behave==1.2.6
+Flask==1.1.1
+Flask-HTTPAuth==3.3.0
+Flask-RESTful==0.3.7
+Flask-SQLAlchemy==2.4.1
+pytest==5.2.2
+sqlathanor==0.5.0
+responses
+waitress
