@@ -1,4 +1,3 @@
-import time
 from datetime import date, timedelta
 from functools import reduce
 
@@ -31,6 +30,8 @@ class CurrenciesRes(Resource):
         except IntegrityError as e:
             if e.orig.args[0] == 1062:
                 abort(400, message='Currency already exist')
+            else:
+                abort(400, message='Bad input params')
 
         if GRABBER_WORKER in app.config:
             app.config[GRABBER_WORKER].notify()

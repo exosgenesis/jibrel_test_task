@@ -87,6 +87,7 @@ class RatesGrabber:
     def _rates_grouped_by_days(self, curr, resp):
         # response row structure: [ MTS, OPEN, CLOSE, HIGH, LOW, VOLUME ]
         # tmp row structure: [date, rate, volume]
+        print('-----------RESPONSE: ' + str(resp))
         tmp = [(date.fromtimestamp(x[0] / 1000), x[2], x[5]) for x in resp]
 
         groups = OrderedDict()  # {date -> [closed rate, total volume]}
